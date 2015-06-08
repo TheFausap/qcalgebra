@@ -25,5 +25,6 @@ There are some other interesting functions:
           cleaning of small amplitudes)
 - PROB : it extracts the probability related to measurement of bits in the qreg,
          i.e. (0;1 1) 0 HD K00 - it returns the probability to have as result of
-         measurement the first two qubit to 1, so all the states: |11?>. The first
-         element in the boxed list is the offset (0-based) for the qubit pattern.
+         measurement the first two qubit to 1, so all the states: |11?> after
+         applying hadamard gate to the first qubit of |00>. The first element in
+         the boxed list is the offset (0-based) for the qubit pattern.
