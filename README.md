@@ -1,12 +1,14 @@
 # qcalgebra
 Quantum Computing Algebra package. Quite symbolic. Written in J
 
-K0 is |0>
-K1 is |1>
+- K0 is |0>
+- K1 is |1>
 
 The qubits are expressed via boxed set. So, for example,
 
-1;0 0 (boxed) means |00>, 1;0 1 0 means |010>, etc
+- 1;0 0 (boxed) means |00>
+- 1;0 1 0 means |010>
+- etc...
 
 The operator are written in CAPITAL LETTERS:
 
