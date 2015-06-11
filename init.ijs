@@ -199,15 +199,15 @@ NB. Rk gate for multiqubit
 st=.0{x{>1{y
 stlen=.#>1{y
 cf=.>0{y
-qbf=.1{x rk cf;st
+qbf=.(1{x) rk cf;st
 cf=.>0{qbf
-if. x=stlen-1 do.
+if. (0{x)=stlen-1 do.
 stf=.(i.stlen-1){>1{y
 stf=.stf,>1{qbf
-elseif. x=0 do.
+elseif. (0{x)=0 do.
 stf=.>1{qbf
 stf=.stf,((stlen-x+2)+i.stlen-x+1){>1{y
-elseif. x~:0 do.
+elseif. (0{x)~:0 do.
 stf=.(i.(stlen-1)-x){>1{y
 stf=.stf,>1{qbf
 stf=.stf,((stlen-x+1)+i.stlen-x+1){>1{y
@@ -215,7 +215,7 @@ end.
 cf;stf
 )
 
-RK=:simpl@:Rk"1
+RK=:Rk"1
 
 CRk=:dyad define
 NB. Generic Controlled-Rk gate for 1-qubit
@@ -224,13 +224,15 @@ NB.     - controller qubit
 NB.     - target qubit
 NB.     - k rotation parameter
 NB. y = qubit register
-cst=.0{x{>1{y
+cst=.(0{x){>1{y
 if. cst=1 do.
 ((1{x),2{x) RK y
 else.
 y
 end.
 )
+
+CRK=:CRk"1
 
 Xg=:dyad define
 NB. Pauli-X gate for multiqubit
@@ -433,5 +435,20 @@ tt=.,x prob"1 y
 +/tt
 )
 
+QFT3=:monad define
+NB. QFT for 3 qubits
+NB. just an example
+NB. the qubits are numbered starting from 0
+NB. the following program is a direct translation
+NB. from the quantum circuit.
+K000=.K0 TP K0 TP K0
+tt1=.0 HD K000
+tt1=.(1,0,2) CRK tt1 NB. target qubit is the second
+tt1=.(2,0,3) CRK tt1
+tt2=.1 HD tt1
+tt2=.(2,1,2) CRK tt2
+tt3=.2 HD tt2
+simpl (0,2) SW tt3
+)
 
 
