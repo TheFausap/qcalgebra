@@ -13,12 +13,15 @@ The qubits are expressed via boxed set. So, for example,
 
 The operator are written in CAPITAL LETTERS:
 
-- HD : Hadamard Gate acting on qubit x of quantum state y, i.e. 0 HD K00
-       it means Hadamard gate acting on the first qubit (qubit 0) of |00>
-- XG, YG, ZG: Pauli Gates. The same behaviour as described for HD
-- CNOT : Controlled NOT (XG) gate. Use: (c,t) CNOT qreg, where c is control qubit
-         and t is target qubit
-- CY, CZ : Controlled Y and Controlled Z. As above.
+- HD        : Hadamard Gate acting on qubit x of quantum state y, i.e. 0 HD K00
+              it means Hadamard gate acting on the first qubit (qubit 0) of |00>
+- XG, YG, ZG: Pauli Gates. They have the same behaviour as described for HD
+- CNOT :      Controlled NOT (XG) gate. Use: (c,t) CNOT qreg, where c is control qubit
+              and t is target qubit
+- CY, CZ :    Controlled Y and Controlled Z. As above.
+- R(phi) :    Phase shift gate
+- R_k :       Phase shift gate modified for QFT
+- CRK :       Controlled version of R_k
 
 There are some other interesting functions:
 
@@ -29,3 +32,5 @@ There are some other interesting functions:
          measurement the first two qubit to 1, so all the states: |11?> after
          applying hadamard gate to the first qubit of |00>. The first element in
          the boxed list is the offset (0-based) for the qubit pattern.
+
+- QFT3 : Simple script performing the QFT on 3 qubits in the state |000>.
