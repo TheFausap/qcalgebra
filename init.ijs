@@ -176,11 +176,57 @@ end.
 
 rphi=:dyad define
 NB. Phase shift gate with angle phi (x)
+NB. working on 1-qubit
 phi=._12 o. x
 st=.>1{y
 if. st=1 do.
 cf=.phi*>0{y
 cf;st
+else.
+y
+end.
+)
+
+rk=:dyad define
+NB. a variant of RPHI using 2^x
+NB. as argument
+phi=.2p1 % 2^x
+phi rphi y
+)
+
+Rk=:dyad define
+NB. Rk gate for multiqubit
+st=.0{x{>1{y
+stlen=.#>1{y
+cf=.>0{y
+qbf=.1{x rk cf;st
+cf=.>0{qbf
+if. x=stlen-1 do.
+stf=.(i.stlen-1){>1{y
+stf=.stf,>1{qbf
+elseif. x=0 do.
+stf=.>1{qbf
+stf=.stf,((stlen-x+2)+i.stlen-x+1){>1{y
+elseif. x~:0 do.
+stf=.(i.(stlen-1)-x){>1{y
+stf=.stf,>1{qbf
+stf=.stf,((stlen-x+1)+i.stlen-x+1){>1{y
+end.
+cf;stf
+)
+
+RK=:simpl@:Rk"1
+
+CRk=:dyad define
+NB. Generic Controlled-Rk gate for 1-qubit
+NB. x = list of 
+NB.     - controller qubit 
+NB.     - target qubit
+NB.     - k rotation parameter
+NB. y = qubit register
+cst=.0{x{>1{y
+if. cst=1 do.
+((1{x),2{x) RK y
 else.
 y
 end.
