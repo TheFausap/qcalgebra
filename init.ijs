@@ -33,6 +33,24 @@ TP=:tp"1 1/
 K00=:K0 TP K0
 K01=:K0 TP K1
 
+checksmall=:monad define
+NB. Check for small amplitudes
+NB. either in the real or imag part
+re=.9&o.
+im=.11&o.
+if. (|re y) < 1e_10 do.
+rey=.0
+else.
+rey=.re y
+end.
+if. (|im y) < 1e_10 do.
+imy=.0
+else.
+imy=.im y
+end.
+rey + _11 o. imy
+)
+
 clean=:monad define
 NB. clean qubits with 0 amplitude from a sum
 amp0=.<0
@@ -40,7 +58,9 @@ f0=.-.amp0 E. 0{"1 y
 tqb=.f0#y
 NB. now remove amplitude too much little
 coef=.>0{"1 tqb
+coef=.checksmall"0 coef
 coeffilt=.(|coef) > 1e_10
+tqb=.(<"0 coef),.1{"1 tqb NB. using the new coeffs
 coeffilt#tqb
 )
 
@@ -196,21 +216,23 @@ phi rphi y
 
 Rk=:dyad define
 NB. Rk gate for multiqubit
-st=.0{x{>1{y
+tqb=.0{x
+angle=.1{x
+st=.tqb{>1{y
 stlen=.#>1{y
 cf=.>0{y
-qbf=.(1{x) rk cf;st
+qbf=.angle rk cf;st
 cf=.>0{qbf
-if. (0{x)=stlen-1 do.
+if. tqb=stlen-1 do.
 stf=.(i.stlen-1){>1{y
 stf=.stf,>1{qbf
-elseif. (0{x)=0 do.
-stf=.>1{qbf
-stf=.stf,((stlen-x+2)+i.stlen-x+1){>1{y
-elseif. (0{x)~:0 do.
-stf=.(i.(stlen-1)-x){>1{y
+elseif. tqb=0 do.
+stf=.,>1{qbf
+stf=.stf,((stlen-tqb+2)+i.stlen-tqb+1){>1{y
+elseif. tqb~:0 do.
+stf=.(i.(stlen-1)-tqb){>1{y
 stf=.stf,>1{qbf
-stf=.stf,((stlen-x+1)+i.stlen-x+1){>1{y
+stf=.stf,((stlen-tqb+1)+i.stlen-tqb+1){>1{y
 end.
 cf;stf
 )
@@ -441,7 +463,7 @@ NB. just an example
 NB. the qubits are numbered starting from 0
 NB. the following program is a direct translation
 NB. from the quantum circuit.
-K000=.K0 TP K0 TP K0
+K000=.K0 TP K0 TP K1
 tt1=.0 HD K000
 tt1=.(1,0,2) CRK tt1 NB. target qubit is the second
 tt1=.(2,0,3) CRK tt1
