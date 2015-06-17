@@ -473,4 +473,48 @@ tt3=.2 HD tt2
 simpl (0,2) SW tt3
 )
 
+QFT33=:monad define
+tt=.0 HD y
+tt=.(1,0,2) CRK tt
+tt=.1 HD tt
+tt=.(2,0,4) CRK tt
+tt=.(2,1,2) CRK tt
+tt=.2 HD tt
+simpl tt
+)
+
+
+qqf=:dyad define
+NB. internal verb
+
+)
+
+
+QFT=:dyad define
+NB. Computes the QFT recursively.
+NB. 3 QFT K000 computes the QFT on the three first qubits of K000
+tt=.y
+for_j. i.x-1 do.
+ tt=.j HD tt
+ for_k. i.j+1 do.
+  arg=.2^k+1
+  tt=.(j+1,k,arg) CRK tt
+ end.
+end.
+tt=.(x-1) HD tt
+simpl tt
+)
+
+
+CRQB=:dyad define
+NB. script to create large qubits in equal states
+NB. i.e. |0000...0> or |11111...1> 
+NB. so, 0 CRQB 9 it means : |000000000>
+if. x=0 do.
+  K0 TP^:(y-1) K0
+else.
+  K1 TP^:(y-1) K1
+end.
+)
+
 
