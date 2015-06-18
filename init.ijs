@@ -258,26 +258,26 @@ CRK=:CRk"1
 
 Xg=:dyad define
 NB. Pauli-X gate for multiqubit
-st=.x{>1{y
+st=.x{>1{ y
 stlen=.#>1{y
-cf=.>0{y
+cf=.>0{ y
 qbf=.xg cf;st
 cf=.>0{qbf
 if. x=stlen-1 do.
-stf=.(i.stlen-1){>1{y
+stf=.(i.stlen-1){>1{ y
 stf=.stf,>1{qbf
 elseif. x=0 do.
 stf=.>1{qbf
-stf=.stf,((stlen-x+2)+i.stlen-x+1){>1{y
+stf=.stf,((stlen-x+2)+i.stlen-x+1){>1{ y
 elseif. x~:0 do.
-stf=.(i.(stlen-1)-x){>1{y
+stf=.(i.(stlen-1)-x){>1{ y
 stf=.stf,>1{qbf
-stf=.stf,((stlen-x+1)+i.stlen-x+1){>1{y
+stf=.stf,((x+1)+i.(stlen-1)-x){>1{ y
 end.
 cf;stf
 )
 
-XG=:simpl@:Xg"1
+XG=:([: simpl Xg"1)
 
 Yg=:dyad define
 NB. Pauli-Y gate for multiqubit
@@ -295,12 +295,12 @@ stf=.stf,((stlen-x+2)+i.stlen-x+1){>1{y
 elseif. x~:0 do.
 stf=.(i.(stlen-1)-x){>1{y
 stf=.stf,>1{qbf
-stf=.stf,((stlen-x+1)+i.stlen-x+1){>1{y
+stf=.stf,((x+1)+i.(stlen-1)-x){>1{y
 end.
 cf;stf
 )
 
-YG=:simpl@:Yg"1
+YG=:([: simpl Yg"1)
 
 Zg=:dyad define
 NB. Pauli-Z gate for multiqubit
@@ -318,12 +318,12 @@ stf=.stf,((stlen-x+2)+i.stlen-x+1){>1{y
 elseif. x~:0 do.
 stf=.(i.(stlen-1)-x){>1{y
 stf=.stf,>1{qbf
-stf=.stf,((stlen-x+1)+i.stlen-x+1){>1{y
+stf=.stf,((x+1)+i.(stlen-1)-x){>1{y
 end.
 cf;stf
 )
 
-ZG=:simpl@:Zg"1
+ZG=:([: simpl Zg"1)
 
 RPhi=:dyad define
 NB. Phase gate for multiqubit
@@ -344,12 +344,12 @@ stf=.stf,((stlen-xx+2)+i.stlen-xx+1){>1{y
 elseif. x~:0 do.
 stf=.(i.(stlen-1)-xx){>1{y
 stf=.stf,>1{qbf
-stf=.stf,((stlen-xx+1)+i.stlen-xx+1){>1{y
+stf=.stf,((xx+1)+i.(stlen-1)-xx){>1{y
 end.
 cf;stf
 )
 
-RPHI=:simpl@:RPhi"1
+RPHI=:([: simpl RPhi"1)
 
 cnot=:monad define
 NB. CNOT gate for 2-qubit
@@ -375,7 +375,7 @@ y
 end.
 )
 
-CNOT=:simpl@:Cnot"1
+CNOT=:([: simpl Cnot"1)
 
 CYg=:dyad define
 NB. Generic Controlled-Y gate for multi qubit
@@ -389,7 +389,7 @@ y
 end.
 )
 
-CYG=:simpl@:CYg"1
+CYG=:([: simpl CYg"1)
 
 CZg=:dyad define
 NB. Generic Controlled-Z gate for multi qubit
@@ -403,7 +403,7 @@ y
 end.
 )
 
-CZG=:simpl@:CZg"1
+CZG=:([: simpl CZg"1)
 
 Sw=:dyad define
 NB. SWAP gate for 2qubit
@@ -417,7 +417,7 @@ st=.vals des } st
 cf;st
 )
 
-SW=:simpl@:Sw"1
+SW=:([: simpl Sw"1)
 
 DTheta=:dyad define
 NB. Deutsch gate 3-qubit
@@ -435,7 +435,7 @@ y
 end.
 )
 
-DTHETA=:simpl@:DTheta"1
+DTHETA=:([: simpl DTheta"1)
 
 prob=:dyad define
 NB. return the probability to have the specified state
@@ -457,38 +457,21 @@ tt=.,x prob"1 y
 +/tt
 )
 
-QFT3=:monad define
-NB. QFT for 3 qubits
-NB. just an example
-NB. the qubits are numbered starting from 0
-NB. the following program is a direct translation
-NB. from the quantum circuit.
-K000=.K0 TP K0 TP K1
-tt1=.0 HD K000
-tt1=.(1,0,2) CRK tt1 NB. target qubit is the second
-tt1=.(2,0,3) CRK tt1
-tt2=.1 HD tt1
-tt2=.(2,1,2) CRK tt2
-tt3=.2 HD tt2
-simpl (0,2) SW tt3
+NRM=:monad define
+NB. returns norm of the vector
+norm=.,>0{"1 y
+norm=.+/norm^2
+%:norm
 )
 
-QFT33=:monad define
-tt=.0 HD y
-tt=.(1,0,2) CRK tt
-tt=.1 HD tt
-tt=.(2,0,4) CRK tt
-tt=.(2,1,2) CRK tt
-tt=.2 HD tt
-simpl tt
+NRMZ=:monad define
+NB. normalize the vector to unitary
+coef=.,>0{"1 y
+nn=.NRM y
+coef=.coef%nn
+st=.>1{"1 y
+coef;"0 1 st
 )
-
-
-qqf=:dyad define
-NB. internal verb
-
-)
-
 
 QFT=:dyad define
 NB. Computes the QFT recursively.
@@ -505,7 +488,6 @@ tt=.(x-1) HD tt
 simpl tt
 )
 
-
 CRQB=:dyad define
 NB. script to create large qubits in equal states
 NB. i.e. |0000...0> or |11111...1> 
@@ -516,5 +498,4 @@ else.
   K1 TP^:(y-1) K1
 end.
 )
-
 
