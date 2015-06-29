@@ -1,5 +1,6 @@
 K0=:1;0
 K1=:1;1
+
 sq=:%%:2
 pi2=:(%2)*1p1
 pi4=:(%4)*1p1
@@ -26,12 +27,87 @@ sty=.>1{y
 x,:y
 )
 
-NB. TP=:([: , tp"1 1/)
+SUM=:sum"1
 
-TP=:tp"1 1/
+diff=:dyad define
+x sum _1 mul y
+)
 
-K00=:K0 TP K0
-K01=:K0 TP K1
+DIFF=:diff"1
+
+mul=:dyad define
+NB. multiplication with a scalar
+coef=.>0{y
+coef=.x * coef
+stat=.>1{y
+coef;stat
+)
+
+MUL=:mul"1
+
+bmul2=:dyad define
+NB. multiplication between bra and ket
+NB. with simplification rules embedded
+NB. x is BRA ---- y is KET
+stx=.>1{"1 x
+sty=.>1{"1 y
+coex=.>0{"1 x
+coey=.>0{"1 y
+lstx=.#stx
+lsty=.#sty
+if. lstx = 1 *. lsty = 1 do.
+ if. stx=sty do.
+  (coex*coey);stx
+ else.
+  0;stx
+ end.
+else.
+ if. lstx > lsty do.
+  x bmul1"0 1 y
+ else.
+  x bmul1"1 0 y
+ end.
+end.
+)
+
+bmul1=:dyad define
+NB. multiplication between bra and ket
+NB. with simplification rules embedded
+NB. x is BRA ---- y is KET
+stx=.>1{"1 x
+sty=.>1{"1 y
+coex=.>0{"1 x
+coey=.>0{"1 y
+lstx=.#stx
+lsty=.#sty
+if. (lstx = 1) *. (lsty = 1) do.
+ if. stx=sty do.
+  (coex*coey);stx
+ else.
+  0;stx
+ end.
+else.
+end.
+)
+
+bmul=:dyad define
+NB. multiplication between bra and ket
+NB. with simplification rules embedded
+NB. x is BRA ---- y is KET
+stx=.1{"1 x
+sty=.1{"1 y
+lstx=.#>stx
+lsty=.#>sty
+if. lstx > lsty do.
+ x bmul1"0 1 y
+elseif. lstx < lsty do.
+ x bmul1"1 0 y
+elseif. lstx = lsty do.
+ x bmul1 y
+end.
+)
+
+BMUL=:([: simpl bmul"1)
 
 checksmall=:monad define
 NB. Check for small amplitudes
@@ -112,6 +188,11 @@ else.
   stlen boxbin ,clean (nstateq,2)$tt
 end.
 )
+
+TP=:([: ,@simpl tp"1 1/)
+
+K00=:K0 TP K0
+K01=:K0 TP K1
 
 CMUL=:dyad define
 NB. multiplication qubit by a constant
@@ -499,3 +580,13 @@ else.
 end.
 )
 
+K000=:0 CRQB 3
+K111=:1 CRQB 3
+
+NB. internal usage 
+B000=:sq MUL K000 SUM K111
+B111=:sq MUL K000 DIFF K111
+
+NB. redundant coding (steane - QEC)
+L0=:B000 TP B000 TP B000 NB. Logical |0>
+L1=:B111 TP B111 TP B111 NB. Logical |1>
