@@ -1,5 +1,5 @@
-K0=:1;0
-K1=:1;1
+K0=:1;1$0
+K1=:1;1$1
 
 sq=:%%:2
 pi2=:(%2)*1p1
@@ -45,65 +45,37 @@ coef;stat
 
 MUL=:mul"1
 
-bmul2=:dyad define
-NB. multiplication between bra and ket
-NB. with simplification rules embedded
-NB. x is BRA ---- y is KET
-stx=.>1{"1 x
-sty=.>1{"1 y
-coex=.>0{"1 x
-coey=.>0{"1 y
-lstx=.#stx
-lsty=.#sty
-if. lstx = 1 *. lsty = 1 do.
- if. stx=sty do.
-  (coex*coey);stx
- else.
-  0;stx
- end.
-else.
- if. lstx > lsty do.
-  x bmul1"0 1 y
- else.
-  x bmul1"1 0 y
- end.
-end.
-)
-
-bmul1=:dyad define
-NB. multiplication between bra and ket
-NB. with simplification rules embedded
-NB. x is BRA ---- y is KET
-stx=.>1{"1 x
-sty=.>1{"1 y
-coex=.>0{"1 x
-coey=.>0{"1 y
-lstx=.#stx
-lsty=.#sty
-if. (lstx = 1) *. (lsty = 1) do.
- if. stx=sty do.
-  (coex*coey);stx
- else.
-  0;stx
- end.
-else.
-end.
-)
-
 bmul=:dyad define
 NB. multiplication between bra and ket
 NB. with simplification rules embedded
 NB. x is BRA ---- y is KET
-stx=.1{"1 x
-sty=.1{"1 y
-lstx=.#>stx
-lsty=.#>sty
-if. lstx > lsty do.
- x bmul1"0 1 y
-elseif. lstx < lsty do.
- x bmul1"1 0 y
-elseif. lstx = lsty do.
- x bmul1 y
+stx=.>1{ x
+sty=.>1{ y
+coe=.(>0{ x) * >0{ y
+lstx=.#stx
+lsty=.#sty
+if. lstx = 1 *. lsty = 1 do.
+ if. stx=sty do.
+  coe;stx
+ else.
+  0;stx
+ end.
+else.
+ if. lsty > lstx do.
+  status=.*/(lstx {. sty) = stx
+  if. status=0 do. NB. orthogonal states so nullify multiplication
+   0;sty
+  else.
+   coe;(lstx }. sty)
+  end.
+ else.
+  status=.*/(lsty {. stx) = sty
+  if. status=0 do. NB. orthogonal states so nullify multiplication
+   0;sty
+  else.
+   coe;(lsty }. stx)
+  end.
+ end.
 end.
 )
 
