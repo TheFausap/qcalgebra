@@ -34,4 +34,6 @@ There are some other interesting functions:
          the boxed list is the offset (0-based) for the qubit pattern.
 
 - QFT   : performs the QFT (quantum fourier transform) on qubits.
+          3 QFT K000 computes the QFT on the three first qubits of K000
+ 
 - Added some QEC states (encoded logical states in 9 qubits), but more has to be developed (like decoding).
