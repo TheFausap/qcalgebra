@@ -5,7 +5,7 @@ Quantum Computing Algebra package. Quite symbolic. Written in J
 - K1 is |1>
 - K00 is K0 TP K0, TP function is used to create bigger qubits (Tensor Product)
 
-The qubits are expressed via boxed set. So, for example,
+The qubits are expressed via boxed set (the first element is the complex coefficient). So, for example,
 
 - 1;0 0 (boxed) means |00>
 - 1;0 1 0 means |010>
