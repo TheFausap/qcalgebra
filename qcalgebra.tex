@@ -1,0 +1,76 @@
+\documentclass[a4paper,11pt]{amsbook}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\begin{document}
+\title{QCAlgebra Package}
+\author{Fausto Saporito}
+\maketitle
+\tableofcontents
+\part{Description}
+
+\chapter{Package description}
+
+\section{Generalities}
+
+These verbs (written in J) implements some quantum computing algebra useful to 
+perform some quantum circuit calculation.\\
+
+In this schema 
+\begin{itemize}
+\item K0 is $|0\rangle$ 
+\item K1 is $|1\rangle$ 
+\end{itemize}
+
+and K00($|00>$) is K0 TP K0. The verb TP is used to create bigger qubits (Tensor Product).\\
+
+Internally, the qubits are expressed via boxed set (the first element is the complex coefficient). So, for example,
+
+\begin{itemize}
+\item 1;0 0 means $|00\rangle $
+\item 1;0 1 0 means $|010\rangle $
+\item 2;0 0 means $2|00\rangle $
+\end{itemize}
+
+\section{Gates}
+
+The GATES are written in CAPITAL LETTERS (they performs automatically a simplification and cleaning) and the arguments follow the J-standard:
+\begin{enumerate}
+\item HD : Hadamard Gate acting on qubit x of quantum state y
+\begin{center}
+ 0 HD K00
+\end{center}
+it means Hadamard gate acting on the first qubit (qubit 0) of $|00\rangle$, so $\frac{1}{\sqrt{2}}(|0\rangle  + |1\rangle )|0\rangle  = \frac{1}{\sqrt{2}}(|00\rangle  + |10\rangle )$. This gate is useful to generate a superposition of states, starting from a simple one ($|0\rangle$ or $|1\rangle$).
+\item XG, YG, ZG: Pauli Gates. They use the same standard as described for HD gate
+\item CNOT : Controlled NOT (XG) gate. Use: (c,t) CNOT qreg, where c is control qubit and t is target qubit
+\item CY, CZ : Controlled Y and Controlled Z. As above.
+\item R(phi) : Phase shift gate
+\item Rk : Phase shift gate modified for QFT (internal use)
+\item CRK : Controlled version of Rk
+\end{enumerate}
+
+There are some other interesting verbs, used mainly inside the other verbs to 
+perform very specific activities. They are:
+\begin{itemize}
+\item simpl : it performs simplification of qubit expression (summation and cleaning of small complex amplitudes)
+\item PROB : it extracts the probability related to measurement of bits in the qreg, i.e. (0;1 1) 0 HD K00 - it returns the probability to have as result of measurement the first two qubit to 1, so all the states: $|11?\rangle$ after applying hadamard gate to the first qubit of $|00\rangle$. The first element in the boxed list is the offset (0-based) for the qubit pattern.
+\item QFT : performs the QFT (quantum fourier transform) on qubits. 3 QFT K000 computes the QFT on the three first qubits of K000, in terms of qubits we have:\\
+\[
+\begin{array}{}
+$0.35355339+0.00000000i |000\rangle + $ \cr
+$0.35355339+0.00000000i |001\rangle + $ \cr
+$0.35355339+0.00000000i |010\rangle + $ \cr
+$0.35355339+0.00000000i |011\rangle + $ \cr
+$0.35355339+0.00000000i |100\rangle + $ \cr
+$0.35355339+0.00000000i |101\rangle + $ \cr
+$0.35355339+0.00000000i |110\rangle + $ \cr
+$0.35355339+0.00000000i |111\rangle$
+\end{array}
+\]
+\end{itemize}
+
+Last but not least, there's a starting implementation of QEC protocols.
+At the moment there's an encoding developed by Shor, using 9 qubits.
+
+
+\end{document}

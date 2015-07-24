@@ -161,7 +161,7 @@ else.
 end.
 )
 
-TP=:([: ,@simpl tp"1 1/)
+TP=:tp"1 1/
 
 K00=:K0 TP K0
 K01=:K0 TP K1
