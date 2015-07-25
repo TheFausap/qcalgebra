@@ -203,19 +203,21 @@ st=.>1{y
 cf=.,>0{y
 sq=.%2
 isq=._11 o. sq
-h01=.(cf*sq);(0 1)
-ih01=.(cf*isq);(0 1)
-h10=.(cf*sq);(1 0)
-ih10=.(cf*isq);(1 0)
+h01=.sq;(0 1)
+ih01=.isq;(0 1)
+h10=.sq;(1 0)
+ih10=.isq;(1 0)
 if. ((+/st)=0) +. (+/st=2) do.
  y
 else.
  if. (0{st) = 0 do.
-  tt=.(h01 sum ih01) SUM (h10 diff ih10)
-  4 2$,tt
+  tt=.(h01 SUM ih01) SUM (h10 DIFF ih10)
+  NB.4 2$,tt
+  tt
  else.
-  tt=.(h01 diff ih01) SUM (h10 sum ih10)
-  4 2$,tt
+  tt=.(h01 DIFF ih01) SUM (h10 DIFF ih10)
+  NB.4 2$,tt
+  tt
  end.
 end.
 )
