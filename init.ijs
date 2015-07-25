@@ -143,21 +143,31 @@ y=.binbox ,y
 len=.#,y
 l2=.len%2
 stpos=.(2|i.len)#i.len
-cpos=.1-stpos          NB. positions for the coeffs
+NB. positions for the coeffs
+cpos=.stpos-1          
 y=.(l2,2)$y
-states=.stpos { >,y    NB. extract the states
+NB. extract the states
+states=.stpos { >,y    
 coeffs=.cpos { >,y
-stateq=.(-.~:states)#states  NB. duplicated states
-nstateq=.#stateq             NB. how many ?
-stateqpos=.stateq I.@:E."0 1 [ states   NB. positions of duplicated states
+NB. duplicated states
+stateq=.(-.~:states)#states  
+NB. how many ?
+nstateq=.#stateq             
+   
 if. nstateq=0 do.
   clean stlen boxbin ,y
 else.
-  tt=.(+/(0{stateqpos){coeffs);0{stateq
-  for_j. 1+i.nstateq-1 do.
-    tt=.tt,((+/(j{stateqpos){coeffs);j{stateq)
+  tt=.a:
+  NB. positions of duplicated states
+  for_k. stateq do.
+   stateqpos=.k I.@:E."0 1 [ states
+   NB.tt=.(+/(0{stateqpos){coeffs);0{stateq
+   tt=.tt,(+/stateqpos{coeffs);k
+   NB.for_j. 1+i.nstateq-1 do.
+   NB. tt=.tt,((+/(j{stateqpos){coeffs);j{stateq)
+   NB.end.
   end.
-  stlen boxbin ,clean (nstateq,2)$tt
+  stlen boxbin ,clean (nstateq,2)$tt-.a:
 end.
 )
 
@@ -184,6 +194,29 @@ if. st=0 do.
 cf CMUL"0 1 h0 sum h1
 else.
 cf CMUL"0 1 h0 sum hm1
+end.
+)
+
+sqsw=:monad define
+NB. Square root of swap acting on 2 qubit
+st=.>1{y
+cf=.,>0{y
+sq=.%2
+isq=._11 o. sq
+h01=.(cf*sq);(0 1)
+ih01=.(cf*isq);(0 1)
+h10=.(cf*sq);(1 0)
+ih10=.(cf*isq);(1 0)
+if. ((+/st)=0) +. (+/st=2) do.
+ y
+else.
+ if. (0{st) = 0 do.
+  tt=.(h01 sum ih01) SUM (h10 diff ih10)
+  4 2$,tt
+ else.
+  tt=.(h01 diff ih01) SUM (h10 sum ih10)
+  4 2$,tt
+ end.
 end.
 )
 

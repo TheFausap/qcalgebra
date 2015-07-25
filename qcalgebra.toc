@@ -1,0 +1,7 @@
+\contentsline {part}{Part\ 1. \enspace \noindent Description}{5}
+\contentsline {chapter}{\tocchapter {Chapter}{1}{Package description}}{7}
+\contentsline {section}{\tocsection {}{1}{Generalities}}{7}
+\contentsline {section}{\tocsection {}{2}{Verbs}}{7}
+\contentsline {subsection}{\tocsubsection {}{2.1}{Operator verbs}}{7}
+\contentsline {subsection}{\tocsubsection {}{2.2}{Other verbs}}{8}
+\contentsline {part}{Part\ 2. \enspace \noindent Source code}{9}
