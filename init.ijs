@@ -7,7 +7,8 @@ pi4=:(%4)*1p1
 pi8=:(%8)*1p1
 
 tp=:dyad define
-NB. tensor product between
+NB. tensor product between qubits
+NB. i.e. |0> tp |1> = |01>
 cx=.>0{x
 cy=.>0{y
 stx=.>1{x
@@ -176,6 +177,7 @@ TP=:tp"1 1/
 
 K00=:K0 TP K0
 K01=:K0 TP K1
+K10=:K1 TP K0
 
 CMUL=:dyad define
 NB. multiplication qubit by a constant
@@ -301,13 +303,15 @@ phi=.2p1 % 2^x
 phi rphi y
 )
 
-Rk=:dyad define
+RkOld=:dyad define
 NB. Rk gate for multiqubit
 tqb=.0{x
 angle=.1{x
 st=.tqb{>1{y
-stlen=.#>1{y
+NB. how many qubits
+stlen=.#>1{y 
 cf=.>0{y
+NB. rotated qubit
 qbf=.angle rk cf;st
 cf=.>0{qbf
 if. tqb=stlen-1 do.
@@ -322,6 +326,20 @@ stf=.stf,>1{qbf
 stf=.stf,((stlen-tqb+1)+i.stlen-tqb+1){>1{y
 end.
 cf;stf
+)
+
+Rk=:dyad define
+NB. Rk gate for multiqubit
+tqb=.0{x
+angle=.1{x
+st=.tqb{>1{y
+NB. how many qubits
+stlen=.#>1{y 
+cf=.>0{y
+NB. rotated qubit
+qbf=.angle rk cf;st
+cf=.>0{qbf
+cf;1{y
 )
 
 RK=:Rk"1
@@ -366,7 +384,7 @@ cf;stf
 
 XG=:([: simpl Xg"1)
 
-Yg=:dyad define
+YgOld=:dyad define
 NB. Pauli-Y gate for multiqubit
 st=.x{>1{y
 stlen=.#>1{y
@@ -384,6 +402,18 @@ stf=.(i.(stlen-1)-x){>1{y
 stf=.stf,>1{qbf
 stf=.stf,((x+1)+i.(stlen-1)-x){>1{y
 end.
+cf;stf
+)
+
+Yg=:dyad define
+NB. Pauli-Y gate for multiqubit
+st=.x{>1{y
+stlen=.#>1{y
+cf=.>0{y
+qbf=.yg cf;st
+cf=.>0{qbf
+sf=.>1{qbf
+stf=.sf (x) } >1{y
 cf;stf
 )
 
@@ -412,7 +442,7 @@ cf;stf
 
 ZG=:([: simpl Zg"1)
 
-RPhi=:dyad define
+RPhiOld=:dyad define
 NB. Phase gate for multiqubit
 NB. (targqubit,phase) RPHI qreg
 xx=.0{x
@@ -434,6 +464,19 @@ stf=.stf,>1{qbf
 stf=.stf,((xx+1)+i.(stlen-1)-xx){>1{y
 end.
 cf;stf
+)
+
+RPhi=:dyad define
+NB. Phase gate for multiqubit
+NB. (targqubit,phase) RPHI qreg
+xx=.0{x
+phi=.1{x
+st=.xx{>1{y
+stlen=.#>1{y
+cf=.>0{y
+qbf=.phi rphi cf;st
+cf=.>0{qbf
+cf;1{y
 )
 
 RPHI=:([: simpl RPhi"1)
@@ -570,8 +613,10 @@ for_j. i.x-1 do.
   arg=.2^k+1
   tt=.(j+1,k,arg) CRK tt
  end.
+smoutput 'done qubit ';j
 end.
 tt=.(x-1) HD tt
+smoutput 'simplifying result...'
 simpl tt
 )
 

@@ -45,12 +45,20 @@ The GATES, in the code, are written in CAPITAL LETTERS (they performs automatica
 \end{center}
 it means Hadamard gate acting on the first qubit (qubit 0) of $|00\rangle$, so $\frac{1}{\sqrt{2}}(|0\rangle  + |1\rangle )|0\rangle  = \frac{1}{\sqrt{2}}(|00\rangle  + |10\rangle )$. This gate is useful to generate a superposition of states, starting from a simple one ($|0\rangle$ or $|1\rangle$).
 \item XG, YG, ZG: Pauli Gates. They use the same standard as described for HD gate
-\item CNOT : Controlled NOT (XG) gate. Use: (c,t) CNOT qreg, where c is control qubit and t is target qubit
+\item CNOT : Controlled NOT (XG) gate. Use: (c,t) CNOT qreg, where c is control qubit and t is target qubit. The CNOT gate applies a NOT logic gate on the target qubit only if the control qubit is 1.
+\begin{center}
+(0,1) CNOT K10 = K11
+\end{center}
+The qubits are numbered starting from 0 and from left to the right.
 \item CY, CZ : Controlled Y and Controlled Z. As above.
 \item RPHI : Phase shift gate (rotation) $R_\phi$
 \item RK : Phase shift gate modified for QFT (internal use) (rotation) $R_k$
 \item CRK : Controlled version of $R_k$
-\item SW: Swap GATE
+\item SW: Swap GATE (SW K01 i.e. $|01\rangle \rightarrow |10\rangle$)
+\item SQSW $\left(\sqrt{SW}\right)$: Square root of SWAP gate, i.e. $SQSW SQSW K01 = SW K01 = K10$. In terms of verbs, we have:
+\begin{center}
+simpl SQSW SQSW K01
+\end{center} and the results is K10, as it should be.
 \item DTHETA : Deutch (universal) gate $D(\theta)$.
 \end{enumerate}
 
@@ -59,7 +67,7 @@ it means Hadamard gate acting on the first qubit (qubit 0) of $|00\rangle$, so $
 There are some other interesting verbs, used mainly inside the other verbs to 
 perform very specific activities. They are:
 \begin{itemize}
-\item simpl : it performs simplification of qubit expression (summation and cleaning of small complex amplitudes)
+\item simpl : it performs simplification of qubit expression (factorization based on qubit states and cleaning of small complex amplitudes)
 \item PROB : it extracts the probability related to measurement of bits in the qreg, i.e. (0;1 1) PROB 0 HD K00 - it returns the probability to have as result of measurement the first two qubit to 1, so all the states: $|11?\rangle$ after applying hadamard gate to the first qubit of $|00\rangle$. The first element in the boxed list is the offset (0-based) for the qubit pattern.
 \item QFT : performs the QFT (quantum fourier transform) on qubits. 
 \begin{center}
@@ -77,11 +85,16 @@ perform very specific activities. They are:
 0.35355339+0.00000000i |111\rangle
 \end{array}
 \]
-the probability associated to each state is $12.5\%$, if we use PROB verb for the first state $|000\rangle$
+and the probability associated to each state is $12.5\%$. We can check this with PROB verb for the first state $|000\rangle$
 \begin{center}
 (0;0 0 0) PROB 3 QFT K000
 \end{center}
-it returns $0.125$ i.e. $12.5\%$
+it returns $0.125$ i.e. $12.5\%$ \\
+Using the matrix approach, the size of that square matrix is $2^{n}$ x $2^{n}$. So it's quite impossible to calculate a QFT on 20 qubits. Instead in this way we can "easily" perform such task:
+\begin{center}
+14 QFT 0 CRQB 14
+\end{center}
+in about 5 mins (on my laptop), obtaining a matrix $2^{14}$ x $2$.
 \end{itemize}
 
 Last but not least, there's a starting implementation of QEC protocols.
