@@ -129,7 +129,8 @@ l2=.len%2
 twostr=.x$2
 stpos=.(2|i.len)#i.len
 for_j. stpos do.
-  yval=.twostr#:>j{y 
+  tt=.9 o. >j{y
+  yval=.twostr#:tt 
   y=.(<yval) j }y
 end.
 (l2,2)$y
@@ -200,27 +201,25 @@ end.
 sqsw=:monad define
 NB. Square root of swap acting on 2 qubit
 st=.>1{y
-cf=.,>0{y
+cf=.>0{y
 sq=.%2
 isq=._11 o. sq
-h01=.sq;(0 1)
-ih01=.isq;(0 1)
-h10=.sq;(1 0)
-ih10=.isq;(1 0)
+h01=.(cf*sq);(0 1)
+ih01=.(cf*isq);(0 1)
+h10=.(cf*sq);(1 0)
+ih10=.(cf*isq);(1 0)
 if. ((+/st)=0) +. (+/st=2) do.
  y
 else.
  if. (0{st) = 0 do.
-  tt=.(h01 SUM ih01) SUM (h10 DIFF ih10)
-  NB.4 2$,tt
-  tt
+  (h01 SUM ih01) SUM (h10 DIFF ih10)
  else.
-  tt=.(h01 DIFF ih01) SUM (h10 DIFF ih10)
-  NB.4 2$,tt
-  tt
+  (h01 DIFF ih01) SUM (h10 SUM ih10)
  end.
 end.
 )
+
+SQSW=: simpl@sqsw"1 
 
 Hd=:dyad define
 NB. hadamard gate for multi-qubit
